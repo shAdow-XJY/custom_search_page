@@ -10,15 +10,25 @@ class SearchBar extends StatefulWidget {
 }
 
 class _SearchBarState extends State<SearchBar> {
+
   final TextEditingController _searchTextController = TextEditingController();
 
-  void _search(String query) {
-    // 搜索引擎URL
-    String googleUrl = 'https://www.google.com/search?q=$query';
-    String bingUrl = 'https://www.bing.com/search?q=$query';
-    String duckDuckGoUrl = 'https://duckduckgo.com/?q=$query';
+  // 搜索引擎URL
+  List<String> engineUrl = [
+    'https://www.bing.com/search?q=',
+    'https://www.google.com/search?q=',
+    'https://baidu.com/s?wd=',
+  ];
+  List<String> engineName = [
+    'bing',
+    'google',
+    'baidu',
+  ];
 
-    window.location.href = bingUrl;
+  int engineIndex = 0;
+
+  void _search(String query) {
+    window.location.href = engineUrl[engineIndex] + query;
   }
 
   @override
@@ -31,12 +41,39 @@ class _SearchBarState extends State<SearchBar> {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(16.0),
-      child: TextField(
+      child: TextFormField(
         controller: _searchTextController,
-        decoration: const InputDecoration(
-          labelText: 'Enter your search query',
+        decoration: InputDecoration(
+          hintText: 'Enter your search query',
+          prefixIcon: Padding(
+            padding: const EdgeInsets.only(left: 10.0, right: 15.0), // Adjust the right padding here
+            child: IconButton(
+              tooltip: engineName[engineIndex],
+              hoverColor: Colors.transparent,
+              icon: Image.asset('asset/icon/${engineName[engineIndex]}.png'),
+              onPressed: () {
+                setState(() {
+                  engineIndex = (engineIndex + 1) % 3;
+                });
+              },
+            ),
+          ),
+          suffixIcon: Padding(
+            padding: const EdgeInsets.only(left: 10.0, right: 15.0), // Adjust the right padding here
+            child: IconButton(
+              tooltip: 'search',
+              hoverColor: Colors.transparent,
+              icon: const Icon(Icons.search_rounded),
+              onPressed: () {
+                _search(_searchTextController.text);
+              },
+            ),
+          ),
+          border: const OutlineInputBorder(
+            borderRadius: BorderRadius.all(Radius.circular(30)),
+          ),
         ),
-        onSubmitted: (String inputQuery) {
+        onFieldSubmitted: (String inputQuery) {
           _search(inputQuery);
         },
       ),
