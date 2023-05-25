@@ -18,7 +18,7 @@ solve flutter web font download event causes bad website speed, change use html 
 
 flutter run --web-renderer html
 
-flutter build web --web-renderer html --release
+flutter build web --web-renderer html --release --base-href /custom_search_page/
 
 ## flutter web build
 index.html
@@ -26,4 +26,10 @@ index.html
     <base href="/">
 =>
     <base href="/custom_search_page/">
+```
+
+## dev
+```
+    热重载（Hot Reload）：在开发过程中，如果您使用了热重载来快速查看更改的效果，那么在每次热重载时都会触发 build 方法执行两次。
+    这是 Flutter 开发过程中的正常行为，并不代表 Flutter Web release。
 ```

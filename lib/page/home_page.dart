@@ -19,30 +19,39 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin {
   final EventBus eventBus = appGetIt.get(instanceName: "EventBus");
   final IndexDB indexDB = appGetIt.get(instanceName: "IndexDB");
   late StreamSubscription subscription_1;
   late StreamSubscription subscription_2;
+  late StreamSubscription subscription_3;
 
-  final openDialogNotifier = ValueNotifier<bool>(false);
+  final ValueNotifier<bool> openDialogNotifier = ValueNotifier<bool>(false);
 
-  final isCustomBackImgNotifier = ValueNotifier<bool>(false);
-  final customBackImgEncodeNotifier = ValueNotifier<String>('');
+  final ValueNotifier<bool> isCustomBackImgNotifier = ValueNotifier<bool>(false);
+  final ValueNotifier<String> customBackImgEncodeNotifier = ValueNotifier<String>('');
+
+  // int boxFitOption = 0;
+  final ValueNotifier<int> boxFitOptionNotifier = ValueNotifier<int>(0);
+  final List<BoxFit> boxFitList = [BoxFit.none, BoxFit.fill, BoxFit.scaleDown, BoxFit.cover, BoxFit.contain, BoxFit.fitWidth, BoxFit.fitHeight];
 
   @override
   void initState() {
     super.initState();
+    // boxFitOption = indexDB.get(StoreKey.boxFitOption) as int? ?? 0;
+    boxFitOptionNotifier.value = indexDB.get(StoreKey.boxFitOption) as int? ?? 0;
     customBackImgEncodeNotifier.value =
         indexDB.get(StoreKey.customBackImgEncode) as String? ?? '';
     isCustomBackImgNotifier.value =
         indexDB.get(StoreKey.isCustomBackImg) as bool? ?? false;
-
     subscription_1 = eventBus.on<ChangeBackImgEvent>().listen((event) {
       customBackImgEncodeNotifier.value = event.imgEncode;
     });
     subscription_2 = eventBus.on<ChangeIsCustomBackImgEvent>().listen((event) {
       isCustomBackImgNotifier.value = event.isCustomBackImg;
+    });
+    subscription_3 = eventBus.on<ChangeBoxFitEvent>().listen((event) {
+      boxFitOptionNotifier.value = event.boxFitOption;
     });
   }
 
@@ -50,6 +59,7 @@ class _HomePageState extends State<HomePage> {
   void dispose() {
     subscription_1.cancel();
     subscription_2.cancel();
+    subscription_3.cancel();
     super.dispose();
   }
 
@@ -62,15 +72,30 @@ class _HomePageState extends State<HomePage> {
           child: Stack(
             fit: StackFit.passthrough,
             children: [
-              CachedNetworkImage(
-                fit: BoxFit.fill,
-                imageUrl:
-                    '${WebSiteLink.baseResourceLink}/assets/img/background.jpg',
-                progressIndicatorBuilder: (context, str, downloadProgress) =>
-                    Center(
-                  child: LoadingBouncingGrid.square(),
-                ),
-                errorWidget: (context, url, error) => const Icon(Icons.error),
+              ValueListenableBuilder<bool>(
+                valueListenable: isCustomBackImgNotifier,
+                builder: (context, isCustomBackImg, child) {
+                  return Visibility(
+                    visible: !isCustomBackImg,
+                    maintainState: true,
+                    child: ValueListenableBuilder<int>(
+                      valueListenable: boxFitOptionNotifier,
+                      builder: (context, boxFitOption, child) {
+                        return CachedNetworkImage(
+                          fit: boxFitList[boxFitOption],
+                          filterQuality: FilterQuality.high,
+                          imageUrl:
+                          '${WebSiteLink.baseResourceLink}/assets/img/background.jpg',
+                          progressIndicatorBuilder: (context, str, downloadProgress) =>
+                              Center(
+                                child: LoadingBouncingGrid.square(),
+                              ),
+                          errorWidget: (context, url, error) => const Icon(Icons.error),
+                        );
+                      },
+                    ),
+                  );
+                },
               ),
               ValueListenableBuilder<bool>(
                 valueListenable: isCustomBackImgNotifier,
@@ -81,14 +106,17 @@ class _HomePageState extends State<HomePage> {
                     child: ValueListenableBuilder<String>(
                       valueListenable: customBackImgEncodeNotifier,
                       builder: (context, customBackImgEncode, child) {
-                        return Image.memory(
-                          base64Decode(customBackImgEncode),
-                          fit: BoxFit.fill,
-                          filterQuality: FilterQuality.high,
-                          errorBuilder: (context, object, stackTrace) =>
-                              Container(
-                            color: Colors.grey,
-                          ),
+                        return ValueListenableBuilder<int>(
+                          valueListenable: boxFitOptionNotifier,
+                          builder: (context, boxFitOption, child) {
+                            return Image.memory(
+                              base64Decode(customBackImgEncode),
+                              fit: boxFitList[boxFitOption],
+                              filterQuality: FilterQuality.high,
+                              errorBuilder: (context, object, stackTrace) =>
+                                  Container(color: Colors.grey),
+                            );
+                          },
                         );
                       },
                     ),

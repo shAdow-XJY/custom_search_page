@@ -21,8 +21,9 @@ class _BackSetState extends State<BackSet> {
   final IndexDB indexDB = appGetIt.get(instanceName: "IndexDB");
   final EventBus eventBus = appGetIt.get(instanceName: "EventBus");
 
-  final isCustomBackImgNotifier = ValueNotifier<bool>(false);
-  final customBackImgEncodeNotifier = ValueNotifier<String>('');
+  final ValueNotifier<bool> isCustomBackImgNotifier = ValueNotifier<bool>(false);
+  final ValueNotifier<String> customBackImgEncodeNotifier = ValueNotifier<String>('');
+
 
   @override
   void initState() {
@@ -39,55 +40,62 @@ class _BackSetState extends State<BackSet> {
       ValueListenableBuilder<bool>(
         valueListenable: isCustomBackImgNotifier,
         builder: (context, isCustomBackImg, child) {
-          return CheckboxListTile(
-            value: isCustomBackImg,
-            controlAffinity: ListTileControlAffinity.leading,
-            title: const Text('自定义背景图片'),
-            activeColor: Colors.deepPurple,
-            onChanged: (value) {
-              isCustomBackImgNotifier.value = value!;
-              Future.delayed(const Duration(milliseconds: 300), () {
-                eventBus.fire(ChangeIsCustomBackImgEvent(isCustomBackImg: value));
-                indexDB.put(StoreKey.isCustomBackImg, isCustomBackImgNotifier.value);
-              });
-            },
+          return Column(
+            children: [
+              CheckboxListTile(
+                value: isCustomBackImg,
+                controlAffinity: ListTileControlAffinity.leading,
+                title: const Text('自定义背景图片'),
+                activeColor: Colors.deepPurple,
+                onChanged: (value) {
+                  isCustomBackImgNotifier.value = value!;
+                  Future.delayed(const Duration(milliseconds: 300), () {
+                    eventBus.fire(
+                        ChangeIsCustomBackImgEvent(isCustomBackImg: value));
+                    indexDB.put(StoreKey.isCustomBackImg,
+                        isCustomBackImgNotifier.value);
+                  });
+                },
+              ),
+            ],
           );
         },
       ),
       InkWell(
-          onTap: () {
-            ImageLoader.selectAndSetBackgroundImage().then((String? imgEncode) {
-              if(imgEncode != null) {
-                customBackImgEncodeNotifier.value = imgEncode;
-                Future.delayed(const Duration(milliseconds: 300), () {
-                  eventBus.fire(ChangeBackImgEvent(imgEncode: imgEncode));
-                  indexDB.put(StoreKey.customBackImgEncode, imgEncode);
-                });
-              }
-            });
-          },
-          child: ValueListenableBuilder<String>(
-            valueListenable: customBackImgEncodeNotifier,
-            builder: (context, customBackImgEncode, child) {
-              return Image.memory(
-                base64Decode(customBackImgEncode),
+        onTap: () {
+          ImageLoader.selectAndSetBackgroundImage().then((String? imgEncode) {
+            if (imgEncode != null) {
+              customBackImgEncodeNotifier.value = imgEncode;
+              Future.delayed(const Duration(milliseconds: 300), () {
+                eventBus.fire(ChangeBackImgEvent(imgEncode: imgEncode));
+                indexDB.put(StoreKey.customBackImgEncode, imgEncode);
+              });
+            }
+          });
+        },
+        child: ValueListenableBuilder<String>(
+          valueListenable: customBackImgEncodeNotifier,
+          builder: (context, customBackImgEncode, child) {
+            return Image.memory(
+              base64Decode(customBackImgEncode),
+              height: 200,
+              width: double.infinity,
+              fit: BoxFit.fill,
+              errorBuilder: (context, object, stackTrace) => Container(
                 height: 200,
                 width: double.infinity,
-                fit: BoxFit.fill,
-                errorBuilder: (context, object, stackTrace) => Container(
-                  height: 200,
-                  width: double.infinity,
-                  color: Colors.grey,
-                  child: const Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.image),
-                      Text('选择本地图片'),
-                    ],
-                  ),),
-              );
-            },
-          ),
+                color: Colors.grey,
+                child: const Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.image),
+                    Text('选择本地图片'),
+                  ],
+                ),
+              ),
+            );
+          },
+        ),
       )
     ]);
   }

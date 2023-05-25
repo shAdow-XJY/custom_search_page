@@ -1,3 +1,4 @@
+import 'package:custom_search_page/component/style_set.dart';
 import 'package:flutter/material.dart';
 import '../component/back_set.dart';
 
@@ -25,6 +26,7 @@ class SettingDialog extends StatelessWidget {
                       fontWeight: FontWeight.w500
                   ),
                 ),
+                StyleSet(),
                 BackSet(),
               ],
             )

@@ -7,3 +7,8 @@ class ChangeBackImgEvent {
   final String imgEncode;
   ChangeBackImgEvent({this.imgEncode = ''});
 }
+
+class ChangeBoxFitEvent {
+  final int boxFitOption;
+  ChangeBoxFitEvent({this.boxFitOption = 0});
+}
