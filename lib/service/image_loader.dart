@@ -3,7 +3,7 @@ import 'dart:html' as html;
 import 'dart:typed_data';
 
 class ImageLoader {
-  static Future<Map<String, dynamic>> selectAndSetBackgroundImage() async {
+  static Future<String?> selectAndSetBackgroundImage() async {
     // 在Web平台上选择图片
     final html.InputElement input = html.document.createElement('input') as html.InputElement;
     input
@@ -22,14 +22,9 @@ class ImageLoader {
       final String imgEncode = encoded.replaceFirst(RegExp(r'data:image/[^;]+;base64,'), '');
       // final Uint8List bytes = base64.decode(stripped);
 
-      return {
-        'isSelected': true,
-        'imgEncode': imgEncode,
-      };
+      return imgEncode;
     }
-    return {
-      'isSelected': false,
-    };
+    return null;
   }
 
 }

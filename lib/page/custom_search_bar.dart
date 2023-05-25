@@ -1,6 +1,9 @@
 import 'dart:html';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+
+import '../service/website_link.dart';
 
 class CustomSearchBar extends StatefulWidget {
   const CustomSearchBar({super.key});
@@ -50,7 +53,7 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
             child: IconButton(
               tooltip: engineName[engineIndex],
               hoverColor: Colors.transparent,
-              icon: Image.asset('assets/icon/${engineName[engineIndex]}.png'),
+              icon: Image(image: CachedNetworkImageProvider('${WebSiteLink.baseResourceLink}/assets/icon/${engineName[engineIndex]}.png',)),
               onPressed: () {
                 setState(() {
                   engineIndex = (engineIndex + 1) % 3;

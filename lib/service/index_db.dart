@@ -1,38 +1,37 @@
 import 'dart:async';
-import 'package:custom_search_page/service/store_key.dart';
 import 'package:sembast/sembast.dart';
 import 'package:sembast_web/sembast_web.dart';
 
 class IndexDB {
-  final DatabaseFactory idbFactory = databaseFactoryWeb;
   final String _dbName = 'shadow._db';
   final String _storeName = 'search_records';
   late final Database _db;
   late final StoreRef _store;
+  final Map<String, Object?> _cacheDB = {};
 
   Future<void> init() async {
-    _db = await idbFactory.openDatabase(_dbName);
+    _db = await databaseFactoryWeb.openDatabase(_dbName);
     _store = stringMapStoreFactory.store(_storeName);
-    if (await get(StoreKey.isCustomBackImg) == null) {
-      await put(StoreKey.isCustomBackImg, false);
-    }
-    if (await get(StoreKey.customBackImgEncode) == null) {
-      await put(StoreKey.customBackImgEncode, '');
+    final List<Object?> keys = await _store.findKeys(_db);
+    for (var key in keys) {
+      _cacheDB[key as String] = await _store.record(key).get(_db);
     }
   }
 
-  Future<void> put(String key, dynamic value) async {
+  void put(String key, Object? value) async {
+    _cacheDB[key] = value;
     await _store.record(key).put(_db, value);
   }
 
-  Future<Object?> get(String key) async {
-    final Object? value = await _store.record(key).get(_db);
-    print('value == null');
-    print(value == null);
-    return value;
+  Object? get(String key) {
+    if (_cacheDB.containsKey(key)) {
+      return _cacheDB[key];
+    }
+    return null;
   }
 
-  Future<void> delete(String key) async {
+  void delete(String key) async {
+    _cacheDB.remove(key);
     await _store.record(key).delete(_db);
   }
 }

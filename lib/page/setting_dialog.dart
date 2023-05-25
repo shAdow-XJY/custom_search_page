@@ -1,45 +1,31 @@
-import 'package:event_bus/event_bus.dart';
 import 'package:flutter/material.dart';
-import '../service/app_get_it.dart';
-import '../service/events.dart';
-import '../service/image_loader.dart';
-import '../service/index_db.dart';
-import '../service/store_key.dart';
+import '../component/back_set.dart';
 
-class SettingDialog extends StatefulWidget {
+class SettingDialog extends StatelessWidget {
   const SettingDialog({super.key});
-
-  @override
-  State<SettingDialog> createState() => _SettingDialogState();
-}
-
-class _SettingDialogState extends State<SettingDialog> {
-
-  final IndexDB indexDB = appGetIt.get(instanceName: "IndexDB");
-  final EventBus eventBus = appGetIt.get(instanceName: "EventBus");
 
   @override
   Widget build(BuildContext context) {
     return Dialog(
-      insetPadding: const EdgeInsets.only(right: 20.0, top: 40.0, bottom: 40.0),
       alignment: Alignment.topRight,
+      insetPadding: const EdgeInsets.only(right: 20.0, top: 40.0, bottom: 40.0),
+      surfaceTintColor: Colors.deepPurple,
       child: SingleChildScrollView(
-        child: SizedBox(
+        child: Container(
             width: 360,
             height: 600,
-            child: Column(
+            padding: const EdgeInsets.symmetric(vertical: 14.0, horizontal: 12.0),
+            child: const Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                IconButton(
-                  icon: Icon(Icons.image),
-                  onPressed: () {
-                    ImageLoader.selectAndSetBackgroundImage().then((map) => {
-                      if(map['isSelected']) {
-                        eventBus.fire(ChangeBackImgEvent(imgEncode: map['imgEncode'])),
-                        indexDB.put(StoreKey.customBackImgEncode, map['imgEncode']),
-                      }
-                    });
-                    },
-                )
+                Text(
+                  '自定义设置',
+                  style: TextStyle(
+                      fontSize: 18.0,
+                      fontWeight: FontWeight.w500
+                  ),
+                ),
+                BackSet(),
               ],
             )
         ),
