@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:custom_search_page/component/animation_opacity.dart';
 import 'package:custom_search_page/page/custom_search_bar.dart';
 import 'package:custom_search_page/page/setting_dialog.dart';
 import 'package:event_bus/event_bus.dart';
@@ -19,27 +20,46 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin {
+class _HomePageState extends State<HomePage> {
   final EventBus eventBus = appGetIt.get(instanceName: "EventBus");
   final IndexDB indexDB = appGetIt.get(instanceName: "IndexDB");
   late StreamSubscription subscription_1;
   late StreamSubscription subscription_2;
   late StreamSubscription subscription_3;
+  late StreamSubscription subscription_4;
 
   final ValueNotifier<bool> openDialogNotifier = ValueNotifier<bool>(false);
 
-  final ValueNotifier<bool> isCustomBackImgNotifier = ValueNotifier<bool>(false);
-  final ValueNotifier<String> customBackImgEncodeNotifier = ValueNotifier<String>('');
+  final ValueNotifier<bool> isCustomBackImgNotifier =
+      ValueNotifier<bool>(false);
+  final ValueNotifier<String> customBackImgEncodeNotifier =
+      ValueNotifier<String>('');
 
-  // int boxFitOption = 0;
-  final ValueNotifier<int> boxFitOptionNotifier = ValueNotifier<int>(0);
-  final List<BoxFit> boxFitList = [BoxFit.none, BoxFit.fill, BoxFit.scaleDown, BoxFit.cover, BoxFit.contain, BoxFit.fitWidth, BoxFit.fitHeight];
+  final ValueNotifier<int> boxFitOptionNotifier = ValueNotifier<int>(3);
+  final List<BoxFit> boxFitList = [
+    BoxFit.none,
+    BoxFit.fill,
+    BoxFit.scaleDown,
+    BoxFit.cover,
+    BoxFit.contain,
+    BoxFit.fitWidth,
+    BoxFit.fitHeight
+  ];
+
+  final ValueNotifier<int> searchBarOptionNotifier = ValueNotifier<int>(1);
+  final List<Alignment> searchBarOptions = [
+    Alignment.topCenter,
+    Alignment.center,
+    Alignment.bottomCenter
+  ];
 
   @override
   void initState() {
     super.initState();
-    // boxFitOption = indexDB.get(StoreKey.boxFitOption) as int? ?? 0;
-    boxFitOptionNotifier.value = indexDB.get(StoreKey.boxFitOption) as int? ?? 0;
+    searchBarOptionNotifier.value =
+        indexDB.get(StoreKey.searchBarOption) as int? ?? 1;
+    boxFitOptionNotifier.value =
+        indexDB.get(StoreKey.boxFitOption) as int? ?? 3;
     customBackImgEncodeNotifier.value =
         indexDB.get(StoreKey.customBackImgEncode) as String? ?? '';
     isCustomBackImgNotifier.value =
@@ -52,6 +72,9 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
     });
     subscription_3 = eventBus.on<ChangeBoxFitEvent>().listen((event) {
       boxFitOptionNotifier.value = event.boxFitOption;
+    });
+    subscription_4 = eventBus.on<ChangeSearchBarOptionEvent>().listen((event) {
+      searchBarOptionNotifier.value = event.searchBarOption;
     });
   }
 
@@ -85,12 +108,13 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                           fit: boxFitList[boxFitOption],
                           filterQuality: FilterQuality.high,
                           imageUrl:
-                          '${WebSiteLink.baseResourceLink}/assets/img/background.jpg',
-                          progressIndicatorBuilder: (context, str, downloadProgress) =>
-                              Center(
-                                child: LoadingBouncingGrid.square(),
-                              ),
-                          errorWidget: (context, url, error) => const Icon(Icons.error),
+                              '${WebSiteLink.baseResourceLink}/assets/img/background.jpg',
+                          progressIndicatorBuilder:
+                              (context, str, downloadProgress) => Center(
+                            child: LoadingBouncingGrid.square(),
+                          ),
+                          errorWidget: (context, url, error) =>
+                              const Icon(Icons.error),
                         );
                       },
                     ),
@@ -109,12 +133,15 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                         return ValueListenableBuilder<int>(
                           valueListenable: boxFitOptionNotifier,
                           builder: (context, boxFitOption, child) {
-                            return Image.memory(
-                              base64Decode(customBackImgEncode),
-                              fit: boxFitList[boxFitOption],
-                              filterQuality: FilterQuality.high,
-                              errorBuilder: (context, object, stackTrace) =>
-                                  Container(color: Colors.grey),
+                            return AnimationOpacity(
+                              isShow: isCustomBackImg,
+                              child: Image.memory(
+                                base64Decode(customBackImgEncode),
+                                fit: boxFitList[boxFitOption],
+                                filterQuality: FilterQuality.high,
+                                errorBuilder: (context, object, stackTrace) =>
+                                    Container(color: Colors.grey),
+                              ),
                             );
                           },
                         );
@@ -123,23 +150,33 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                   );
                 },
               ),
-              SingleChildScrollView(
-                child: Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        IconButton(
-                          icon: const Icon(Icons.settings),
-                          onPressed: () {
-                            openDialogNotifier.value =
-                                !openDialogNotifier.value;
-                          },
-                        ),
-                      ],
+              ValueListenableBuilder<int>(
+                valueListenable: searchBarOptionNotifier,
+                builder: (context, searchBarOption, child) {
+                  return Align(
+                    alignment: searchBarOptions[searchBarOption],
+                    child: const SingleChildScrollView(
+                      padding: EdgeInsets.symmetric(vertical: 130.0, horizontal: 50.0),
+                      child: CustomSearchBar(),
                     ),
-                    const CustomSearchBar(),
-                  ],
+                  );
+                },
+              ),
+              Align(
+                alignment: Alignment.topRight,
+                child: SingleChildScrollView(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      IconButton(
+                        icon: const Icon(Icons.settings),
+                        onPressed: () {
+                          openDialogNotifier.value =
+                          !openDialogNotifier.value;
+                        },
+                      ),
+                    ],
+                  ),
                 ),
               ),
               ValueListenableBuilder<bool>(

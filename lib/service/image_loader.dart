@@ -1,6 +1,4 @@
-import 'dart:convert';
 import 'dart:html' as html;
-import 'dart:typed_data';
 
 class ImageLoader {
   static Future<String?> selectAndSetBackgroundImage() async {

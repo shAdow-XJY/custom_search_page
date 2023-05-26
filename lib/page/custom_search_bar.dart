@@ -1,8 +1,14 @@
-import 'dart:html';
+import 'dart:async';
+import 'dart:html' as html;
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:event_bus/event_bus.dart';
 import 'package:flutter/material.dart';
 
+import '../service/app_get_it.dart';
+import '../service/events.dart';
+import '../service/index_db.dart';
+import '../service/store_key.dart';
 import '../service/website_link.dart';
 
 class CustomSearchBar extends StatefulWidget {
@@ -13,6 +19,9 @@ class CustomSearchBar extends StatefulWidget {
 }
 
 class _CustomSearchBarState extends State<CustomSearchBar> {
+  final IndexDB indexDB = appGetIt.get(instanceName: "IndexDB");
+  final EventBus eventBus = appGetIt.get(instanceName: "EventBus");
+  late StreamSubscription subscription_1;
 
   final TextEditingController _searchTextController = TextEditingController();
 
@@ -28,15 +37,33 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
     'baidu',
   ];
 
-  int engineIndex = 0;
+  bool isJumpToNewPage = false;
+  int engineOption = 0;
 
   void _search(String query) {
-    window.location.href = engineUrl[engineIndex] + query;
+    if (isJumpToNewPage) {
+      html.AnchorElement anchorElement = html.AnchorElement(href: engineUrl[engineOption] + query);
+      anchorElement.target = '_blank';
+      anchorElement.click();
+    } else {
+      html.window.location.href = engineUrl[engineOption] + query;
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    engineOption = indexDB.get(StoreKey.engineOption) as int? ?? 0;
+    isJumpToNewPage = indexDB.get(StoreKey.isJumpToNewPage) as bool? ?? false;
+    subscription_1 = eventBus.on<ChangeIsJumpToNewPageEvent>().listen((event) {
+      isJumpToNewPage = event.isJumpToNewPage;
+    });
   }
 
   @override
   void dispose() {
     _searchTextController.dispose();
+    subscription_1.cancel();
     super.dispose();
   }
 
@@ -51,13 +78,14 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
           prefixIcon: Padding(
             padding: const EdgeInsets.only(left: 10.0, right: 15.0), // Adjust the right padding here
             child: IconButton(
-              tooltip: engineName[engineIndex],
+              tooltip: engineName[engineOption],
               hoverColor: Colors.transparent,
-              icon: Image(image: CachedNetworkImageProvider('${WebSiteLink.baseResourceLink}/assets/icon/${engineName[engineIndex]}.png',)),
+              icon: Image(image: CachedNetworkImageProvider('${WebSiteLink.baseResourceLink}/assets/icon/${engineName[engineOption]}.png',)),
               onPressed: () {
                 setState(() {
-                  engineIndex = (engineIndex + 1) % 3;
+                  engineOption = (engineOption + 1) % 3;
                 });
+                indexDB.put(StoreKey.engineOption, engineOption);
               },
             ),
           ),
