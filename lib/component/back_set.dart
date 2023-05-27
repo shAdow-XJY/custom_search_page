@@ -40,24 +40,20 @@ class _BackSetState extends State<BackSet> {
       ValueListenableBuilder<bool>(
         valueListenable: isCustomBackImgNotifier,
         builder: (context, isCustomBackImg, child) {
-          return Column(
-            children: [
-              CheckboxListTile(
-                value: isCustomBackImg,
-                controlAffinity: ListTileControlAffinity.leading,
-                title: const Text('自定义背景图片'),
-                activeColor: Colors.deepPurple,
-                onChanged: (value) {
-                  isCustomBackImgNotifier.value = value!;
-                  Future.delayed(const Duration(milliseconds: 300), () {
-                    eventBus.fire(
-                        ChangeIsCustomBackImgEvent(isCustomBackImg: value));
-                    indexDB.put(StoreKey.isCustomBackImg,
-                        isCustomBackImgNotifier.value);
-                  });
-                },
-              ),
-            ],
+          return CheckboxListTile(
+            value: isCustomBackImg,
+            controlAffinity: ListTileControlAffinity.leading,
+            contentPadding: const EdgeInsets.symmetric(horizontal: 0.0),
+            title: const Text('自定义背景图片'),
+            onChanged: (value) {
+              isCustomBackImgNotifier.value = value!;
+              Future.delayed(const Duration(milliseconds: 300), () {
+                eventBus.fire(
+                    ChangeIsCustomBackImgEvent(isCustomBackImg: value));
+                indexDB.put(StoreKey.isCustomBackImg,
+                    isCustomBackImgNotifier.value);
+              });
+            },
           );
         },
       ),
@@ -96,7 +92,7 @@ class _BackSetState extends State<BackSet> {
             );
           },
         ),
-      )
+      ),
     ]);
   }
 }

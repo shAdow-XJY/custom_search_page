@@ -27,6 +27,9 @@ class _HomePageState extends State<HomePage> {
   late StreamSubscription subscription_2;
   late StreamSubscription subscription_3;
   late StreamSubscription subscription_4;
+  late StreamSubscription subscription_5;
+  late StreamSubscription subscription_6;
+  late StreamSubscription subscription_7;
 
   final ValueNotifier<bool> openDialogNotifier = ValueNotifier<bool>(false);
 
@@ -46,24 +49,44 @@ class _HomePageState extends State<HomePage> {
     BoxFit.fitHeight
   ];
 
-  final ValueNotifier<int> searchBarOptionNotifier = ValueNotifier<int>(1);
-  final List<Alignment> searchBarOptions = [
+  final ValueNotifier<int> searchBarAlignOptionNotifier = ValueNotifier<int>(4);
+  final List<Alignment> searchBarAlignOptions = [
+    Alignment.topLeft,
     Alignment.topCenter,
+    Alignment.topRight,
+    Alignment.centerLeft,
     Alignment.center,
-    Alignment.bottomCenter
+    Alignment.centerRight,
+    Alignment.bottomLeft,
+    Alignment.bottomCenter,
+    Alignment.bottomRight,
   ];
+
+  final ValueNotifier<int> searchBarLengthOptionNotifier = ValueNotifier<int>(1);
+  final List<double> searchBarLengthOptions = [
+    500.0,
+    800.0,
+    1000.0,
+  ];
+
+  final ValueNotifier<int> pageBackColorValueNotifier = ValueNotifier<int>(Colors.white.value);
+  final ValueNotifier<int> settingBtnColorValueNotifier = ValueNotifier<int>(Colors.white.value);
 
   @override
   void initState() {
     super.initState();
-    searchBarOptionNotifier.value =
-        indexDB.get(StoreKey.searchBarOption) as int? ?? 1;
+    searchBarAlignOptionNotifier.value =
+        indexDB.get(StoreKey.searchBarAlignOption) as int? ?? 4;
     boxFitOptionNotifier.value =
         indexDB.get(StoreKey.boxFitOption) as int? ?? 3;
     customBackImgEncodeNotifier.value =
         indexDB.get(StoreKey.customBackImgEncode) as String? ?? '';
     isCustomBackImgNotifier.value =
         indexDB.get(StoreKey.isCustomBackImg) as bool? ?? false;
+    pageBackColorValueNotifier.value =
+        indexDB.get(StoreKey.pageBackColorValue) as int? ?? Colors.white.value;
+    settingBtnColorValueNotifier.value =
+        indexDB.get(StoreKey.settingBtnColorValue) as int? ?? Colors.white.value;
     subscription_1 = eventBus.on<ChangeBackImgEvent>().listen((event) {
       customBackImgEncodeNotifier.value = event.imgEncode;
     });
@@ -73,8 +96,17 @@ class _HomePageState extends State<HomePage> {
     subscription_3 = eventBus.on<ChangeBoxFitEvent>().listen((event) {
       boxFitOptionNotifier.value = event.boxFitOption;
     });
-    subscription_4 = eventBus.on<ChangeSearchBarOptionEvent>().listen((event) {
-      searchBarOptionNotifier.value = event.searchBarOption;
+    subscription_4 = eventBus.on<ChangeSearchBarAlignOptionEvent>().listen((event) {
+      searchBarAlignOptionNotifier.value = event.searchBarAlignOption;
+    });
+    subscription_5 = eventBus.on<ChangeSearchBarLengthOptionEvent>().listen((event) {
+      searchBarLengthOptionNotifier.value = event.searchBarLengthOption;
+    });
+    subscription_6 = eventBus.on<ChangePageBackColorEvent>().listen((event) {
+      pageBackColorValueNotifier.value = event.colorValue;
+    });
+    subscription_7 = eventBus.on<ChangeSettingBtnColorEvent>().listen((event) {
+      settingBtnColorValueNotifier.value = event.colorValue;
     });
   }
 
@@ -83,6 +115,9 @@ class _HomePageState extends State<HomePage> {
     subscription_1.cancel();
     subscription_2.cancel();
     subscription_3.cancel();
+    subscription_4.cancel();
+    subscription_5.cancel();
+    subscription_6.cancel();
     super.dispose();
   }
 
@@ -95,6 +130,14 @@ class _HomePageState extends State<HomePage> {
           child: Stack(
             fit: StackFit.passthrough,
             children: [
+              ValueListenableBuilder<int>(
+                valueListenable: pageBackColorValueNotifier,
+                builder: (context, pageBackColorValue, child) {
+                  return Container(
+                    color: Color(pageBackColorValue),
+                  );
+                },
+              ),
               ValueListenableBuilder<bool>(
                 valueListenable: isCustomBackImgNotifier,
                 builder: (context, isCustomBackImg, child) {
@@ -151,13 +194,21 @@ class _HomePageState extends State<HomePage> {
                 },
               ),
               ValueListenableBuilder<int>(
-                valueListenable: searchBarOptionNotifier,
+                valueListenable: searchBarAlignOptionNotifier,
                 builder: (context, searchBarOption, child) {
                   return Align(
-                    alignment: searchBarOptions[searchBarOption],
-                    child: const SingleChildScrollView(
-                      padding: EdgeInsets.symmetric(vertical: 130.0, horizontal: 50.0),
-                      child: CustomSearchBar(),
+                    alignment: searchBarAlignOptions[searchBarOption],
+                    child: SingleChildScrollView(
+                      padding: const EdgeInsets.symmetric(vertical: 130.0, horizontal: 50.0,),
+                      child: ValueListenableBuilder<int>(
+                        valueListenable: searchBarLengthOptionNotifier,
+                        builder: (context, searchBarLengthOption, child) {
+                          return SizedBox(
+                            width: searchBarLengthOptions[searchBarLengthOption],
+                            child: const CustomSearchBar(),
+                          );
+                        },
+                      ),
                     ),
                   );
                 },
@@ -168,12 +219,39 @@ class _HomePageState extends State<HomePage> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      IconButton(
-                        icon: const Icon(Icons.settings),
-                        onPressed: () {
-                          openDialogNotifier.value =
-                          !openDialogNotifier.value;
-                        },
+                      Container(
+                        width: 40.0,
+                        height: 40.0,
+                        margin: const EdgeInsets.all(5.0),
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          gradient: LinearGradient(
+                            begin: Alignment.topRight,
+                            end: Alignment.bottomLeft,
+                            colors: [
+                              Colors.black.withOpacity(0.1),
+                              Colors.transparent,
+                              Colors.black.withOpacity(0.2),
+                              Colors.black.withOpacity(0.1),
+                              Colors.black.withOpacity(0.2),
+                              Colors.transparent,
+                              Colors.black.withOpacity(0.1),
+                            ],
+                          ),
+                        ),
+                        child: ValueListenableBuilder<int>(
+                          valueListenable: settingBtnColorValueNotifier,
+                          builder: (context, settingBtnColorValue, child) {
+                            return IconButton(
+                              color: Color(settingBtnColorValue),
+                              tooltip: '设置(Settings)',
+                              icon: const Icon(Icons.settings_outlined),
+                              onPressed: () {
+                                openDialogNotifier.value = !openDialogNotifier.value;
+                              },
+                            );
+                          },
+                        ),
                       ),
                     ],
                   ),

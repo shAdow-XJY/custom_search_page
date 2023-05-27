@@ -22,6 +22,10 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
   final IndexDB indexDB = appGetIt.get(instanceName: "IndexDB");
   final EventBus eventBus = appGetIt.get(instanceName: "EventBus");
   late StreamSubscription subscription_1;
+  late StreamSubscription subscription_2;
+  late StreamSubscription subscription_3;
+  late StreamSubscription subscription_4;
+  late StreamSubscription subscription_5;
 
   final TextEditingController _searchTextController = TextEditingController();
 
@@ -40,6 +44,11 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
   bool isJumpToNewPage = false;
   int engineOption = 0;
 
+  int searchBtnColorValue = Colors.deepPurpleAccent.value;
+  int searchBarTextColorValue = Colors.black.value;
+  int searchBarBorderColorValue = Colors.deepPurpleAccent.value;
+  int searchBarBackColorValue = Colors.white.value;
+
   void _search(String query) {
     if (isJumpToNewPage) {
       html.AnchorElement anchorElement = html.AnchorElement(href: engineUrl[engineOption] + query);
@@ -55,8 +64,33 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
     super.initState();
     engineOption = indexDB.get(StoreKey.engineOption) as int? ?? 0;
     isJumpToNewPage = indexDB.get(StoreKey.isJumpToNewPage) as bool? ?? false;
+    searchBtnColorValue = indexDB.get(StoreKey.searchBtnColorValue) as int? ?? Colors.deepPurpleAccent.value;
+    searchBarTextColorValue = indexDB.get(StoreKey.searchBarTextColorValue) as int? ?? Colors.black.value;
+    searchBarBorderColorValue = indexDB.get(StoreKey.searchBarBorderColorValue) as int? ?? Colors.deepPurpleAccent.value;
+    searchBarBackColorValue = indexDB.get(StoreKey.searchBarBackColorValue) as int? ?? Colors.white.value;
+
     subscription_1 = eventBus.on<ChangeIsJumpToNewPageEvent>().listen((event) {
       isJumpToNewPage = event.isJumpToNewPage;
+    });
+    subscription_2 = eventBus.on<ChangeSearchBtnColorEvent>().listen((event) {
+      setState(() {
+        searchBtnColorValue = event.colorValue;
+      });
+    });
+    subscription_3 = eventBus.on<ChangeSearchBarTextColorEvent>().listen((event) {
+      setState(() {
+        searchBarTextColorValue = event.colorValue;
+      });
+    });
+    subscription_4 = eventBus.on<ChangeSearchBarBorderColorEvent>().listen((event) {
+      setState(() {
+        searchBarBorderColorValue = event.colorValue;
+      });
+    });
+    subscription_5 = eventBus.on<ChangeSearchBarBackColorEvent>().listen((event) {
+      setState(() {
+        searchBarBackColorValue = event.colorValue;
+      });
     });
   }
 
@@ -64,6 +98,9 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
   void dispose() {
     _searchTextController.dispose();
     subscription_1.cancel();
+    subscription_2.cancel();
+    subscription_3.cancel();
+    subscription_4.cancel();
     super.dispose();
   }
 
@@ -73,14 +110,19 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
       padding: const EdgeInsets.all(16.0),
       child: TextFormField(
         controller: _searchTextController,
+        cursorColor: Color(searchBarTextColorValue),
+        style: TextStyle(color: Color(searchBarTextColorValue)),
         decoration: InputDecoration(
           hintText: 'Enter your search query',
+          hintStyle: TextStyle(color: Color(searchBarTextColorValue)),
           prefixIcon: Padding(
-            padding: const EdgeInsets.only(left: 10.0, right: 15.0), // Adjust the right padding here
+            padding: const EdgeInsets.only(left: 10.0, right: 15.0),
             child: IconButton(
               tooltip: engineName[engineOption],
               hoverColor: Colors.transparent,
-              icon: Image(image: CachedNetworkImageProvider('${WebSiteLink.baseResourceLink}/assets/icon/${engineName[engineOption]}.png',)),
+              icon: Image(
+                image: CachedNetworkImageProvider('${WebSiteLink.baseResourceLink}/assets/icon/${engineName[engineOption]}.png',),
+              ),
               onPressed: () {
                 setState(() {
                   engineOption = (engineOption + 1) % 3;
@@ -93,16 +135,32 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
             padding: const EdgeInsets.only(left: 10.0, right: 15.0), // Adjust the right padding here
             child: IconButton(
               tooltip: 'search',
-              hoverColor: Colors.transparent,
-              icon: const Icon(Icons.search_rounded),
+              icon: Icon(
+                Icons.search_rounded,
+                color: Color(searchBtnColorValue),
+              ),
               onPressed: () {
                 _search(_searchTextController.text);
               },
             ),
           ),
-          border: const OutlineInputBorder(
-            borderRadius: BorderRadius.all(Radius.circular(30)),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: const BorderRadius.all(Radius.circular(30)),
+            borderSide: BorderSide(
+              color: Color(searchBarBorderColorValue),
+              width: 2.5,
+            ),
           ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: const BorderRadius.all(Radius.circular(30)),
+            borderSide: BorderSide(
+              color: Color(searchBarBorderColorValue),
+              width: 2.5,
+            ),
+          ),
+          filled: true,
+          fillColor: Color(searchBarBackColorValue),
+          contentPadding: EdgeInsets.zero,
         ),
         onFieldSubmitted: (String inputQuery) {
           _search(inputQuery);

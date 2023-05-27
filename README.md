@@ -3,7 +3,7 @@
 A web Flutter project, for import different search engine
 
 ## deploy
-[https://shadowplusing.website/custom_search_page/](https://shadowplusing.website/custom_search_page/)
+[https://shadowplusing.website/custom_search_page/#/](https://shadowplusing.website/custom_search_page/#/)
 
 ## support
 1. [sembast](https://pub.dev/packages/sembast)
@@ -12,6 +12,7 @@ A web Flutter project, for import different search engine
 4. [cached_network_image](https://pub.dev/packages/cached_network_image)
 5. [event_bus](https://pub.dev/packages/event_bus)
 6. [loading_animations](https://pub.dev/packages/loading_animations)
+7. [flutter_colorpicker](https://pub.dev/packages/flutter_colorpicker)
 
 ## Getting Started
 solve flutter web font download event causes bad website speed, change use html render.
