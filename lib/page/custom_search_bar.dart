@@ -47,7 +47,7 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
   int searchBtnColorValue = Colors.deepPurpleAccent.value;
   int searchBarTextColorValue = Colors.black.value;
   int searchBarBorderColorValue = Colors.deepPurpleAccent.value;
-  int searchBarBackColorValue = Colors.white.value;
+  int searchBarBackColorValue = Colors.white.withOpacity(0.3).value;
 
   void _search(String query) {
     if (isJumpToNewPage) {
@@ -67,7 +67,7 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
     searchBtnColorValue = indexDB.get(StoreKey.searchBtnColorValue) as int? ?? Colors.deepPurpleAccent.value;
     searchBarTextColorValue = indexDB.get(StoreKey.searchBarTextColorValue) as int? ?? Colors.black.value;
     searchBarBorderColorValue = indexDB.get(StoreKey.searchBarBorderColorValue) as int? ?? Colors.deepPurpleAccent.value;
-    searchBarBackColorValue = indexDB.get(StoreKey.searchBarBackColorValue) as int? ?? Colors.white.value;
+    searchBarBackColorValue = indexDB.get(StoreKey.searchBarBackColorValue) as int? ?? Colors.white.withOpacity(0.3).value;
 
     subscription_1 = eventBus.on<ChangeIsJumpToNewPageEvent>().listen((event) {
       isJumpToNewPage = event.isJumpToNewPage;

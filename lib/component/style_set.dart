@@ -131,7 +131,7 @@ class _BackSetState extends State<StyleSet> {
         return indexDB.get(StoreKey.searchBarBorderColorValue) as int? ?? Colors.deepPurpleAccent.value;
       }
       case 5: {
-        return indexDB.get(StoreKey.searchBarBackColorValue) as int? ?? defaultColorValue;
+        return indexDB.get(StoreKey.searchBarBackColorValue) as int? ?? Colors.white.withOpacity(0.3).value;
       }
       default:
         return defaultColorValue;
