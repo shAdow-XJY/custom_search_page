@@ -263,7 +263,7 @@ class _HomePageState extends State<HomePage> {
                   return Visibility(
                     visible: isOpenDialog,
                     maintainState: true, // 保持子组件的状态
-                    child: const SettingDialog(),
+                    child: SettingDialog(),
                   );
                 },
               ),

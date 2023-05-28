@@ -18,7 +18,7 @@ class IndexDB {
     }
   }
 
-  void put(String key, Object? value) async {
+  Future<void> put(String key, Object? value) async {
     _cacheDB[key] = value;
     await _store.record(key).put(_db, value);
   }
@@ -30,8 +30,13 @@ class IndexDB {
     return null;
   }
 
-  void delete(String key) async {
+  Future<void> delete(String key) async {
     _cacheDB.remove(key);
     await _store.record(key).delete(_db);
+  }
+
+  Future<void> deleteAll() async {
+    _cacheDB.clear();
+    await _store.delete(_db);
   }
 }
