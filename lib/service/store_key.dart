@@ -5,7 +5,7 @@ class StoreKey {
   static String isJumpToNewPage = 'is_jump_to_new_page';
 
   static String searchBarAlignOption = 'search_bar_align_option';
-  static String searchBarLengthOption = 'search_bar_align_option';
+  static String searchBarLengthOption = 'search_bar_length_option';
   static String boxFitOption = 'box_fit_option';
 
   static String lockOrCustomColor = 'lock_or_custom_color';

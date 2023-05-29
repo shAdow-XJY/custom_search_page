@@ -87,6 +87,8 @@ class _HomePageState extends State<HomePage> {
         indexDB.get(StoreKey.pageBackColorValue) as int? ?? Colors.white.value;
     settingBtnColorValueNotifier.value =
         indexDB.get(StoreKey.settingBtnColorValue) as int? ?? Colors.white.value;
+    searchBarLengthOptionNotifier.value =
+        indexDB.get(StoreKey.searchBarLengthOption) as int? ?? 1;
     subscription_1 = eventBus.on<ChangeBackImgEvent>().listen((event) {
       customBackImgEncodeNotifier.value = event.imgEncode;
     });

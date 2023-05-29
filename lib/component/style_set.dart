@@ -165,12 +165,12 @@ class _BackSetState extends State<StyleSet> {
   @override
   void initState() {
     super.initState();
-    searchBarAlignOptionNotifier.value =
-        indexDB.get(StoreKey.searchBarAlignOption) as int? ?? 4;
-    searchBarLengthOptionNotifier.value =
-        indexDB.get(StoreKey.searchBarLengthOption) as int? ?? 1;
     boxFitOptionNotifier.value =
         indexDB.get(StoreKey.boxFitOption) as int? ?? 3;
+    searchBarLengthOptionNotifier.value =
+        indexDB.get(StoreKey.searchBarLengthOption) as int? ?? 1;
+    searchBarAlignOptionNotifier.value =
+        indexDB.get(StoreKey.searchBarAlignOption) as int? ?? 4;
     lockOrCustomColorNotifier.value =
         indexDB.get(StoreKey.lockOrCustomColor) as bool? ?? false;
     if (lockOrCustomColorNotifier.value) {
@@ -236,8 +236,7 @@ class _BackSetState extends State<StyleSet> {
                       return;
                     }
                     searchBarLengthOptionNotifier.value = temp;
-                    eventBus.fire(ChangeSearchBarLengthOptionEvent(
-                        searchBarLengthOption: temp));
+                    eventBus.fire(ChangeSearchBarLengthOptionEvent(searchBarLengthOption: temp));
                     indexDB.put(StoreKey.searchBarLengthOption, temp);
                   },
                 );
@@ -263,6 +262,7 @@ class _BackSetState extends State<StyleSet> {
                     searchBarAlignOptionNotifier.value = temp;
                     eventBus.fire(ChangeSearchBarAlignOptionEvent(
                         searchBarAlignOption: temp));
+                    print('put');
                     indexDB.put(StoreKey.searchBarAlignOption, temp);
                   },
                 );
