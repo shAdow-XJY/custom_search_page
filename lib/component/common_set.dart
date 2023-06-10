@@ -1,9 +1,10 @@
+import 'package:custom_search_page/component/black_white_text_button.dart';
 import 'package:flutter/material.dart';
 
 class CommonSet extends StatelessWidget {
   final String title;
   final List<Widget> children;
-  final VoidCallback clearCallback;
+  final void Function()? clearCallback;
   const CommonSet(
       {super.key,
       required this.title,
@@ -26,31 +27,8 @@ class CommonSet extends StatelessWidget {
               style:
                   const TextStyle(fontSize: 16.0, fontWeight: FontWeight.w800),
             ),
-            TextButton(
-              onPressed: () {
-                clearCallback();
-              },
-              style: ButtonStyle(
-                side: MaterialStateProperty.resolveWith<BorderSide>((Set<MaterialState> states) {
-                  if (states.contains(MaterialState.hovered) || states.contains(MaterialState.pressed)) {
-                    return const BorderSide(color: Colors.white);
-                  }
-                  return const BorderSide(color: Colors.black);
-                }),
-                padding: MaterialStateProperty.all(const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0)),
-                overlayColor: MaterialStateProperty.resolveWith<Color>((Set<MaterialState> states) {
-                  if (states.contains(MaterialState.hovered) || states.contains(MaterialState.pressed)) {
-                    return Colors.black;
-                  }
-                  return Colors.white;
-                }),
-                foregroundColor: MaterialStateProperty.resolveWith<Color>((Set<MaterialState> states) {
-                  if (states.contains(MaterialState.hovered) || states.contains(MaterialState.pressed)) {
-                    return Colors.white;
-                  }
-                  return Colors.black;
-                }),
-              ),
+            BlackWhiteTextButton(
+              onPressed: clearCallback,
               child: const Text(
                 '恢复默认',
                 style: TextStyle(

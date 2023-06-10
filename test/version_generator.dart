@@ -3,6 +3,17 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:crypto/crypto.dart';
 
+void main() async {
+  Directory folder = Directory('E:\\AndroidStudioProjects\\custom_search_page\\docs'); // 替换为实际的文件夹路径
+  String hash = await calculateFolderHash(folder);
+  print('Folder hash: $hash');
+  File versionTxt = File('E:\\AndroidStudioProjects\\custom_search_page\\docs\\version.txt');
+  if (!versionTxt.existsSync()) {
+    versionTxt.createSync();
+  }
+  versionTxt.writeAsStringSync(hash);
+}
+
 Future<String> calculateFolderHash(Directory folder) async {
   var files = folder.listSync(recursive: true);
   var hashes = <String>[];
@@ -21,15 +32,4 @@ Future<String> calculateFolderHash(Directory folder) async {
   var combinedHash = hashes.join();
   var folderHash = sha256.convert(utf8.encode(combinedHash)).toString();
   return folderHash;
-}
-
-void main() async {
-  Directory folder = Directory('E:\\AndroidStudioProjects\\custom_search_page\\docs'); // 替换为实际的文件夹路径
-  String hash = await calculateFolderHash(folder);
-  print('Folder hash: $hash');
-  File versionTxt = File('E:\\AndroidStudioProjects\\custom_search_page\\docs\\version.txt');
-  if (!versionTxt.existsSync()) {
-    versionTxt.createSync();
-  }
-  versionTxt.writeAsStringSync(hash);
 }

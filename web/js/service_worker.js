@@ -16,7 +16,6 @@ const cacheItems = [
   '/js/service_worker.js',
   '/js/service_worker_register.js',
   '/js/service_worker_clear.js',
-  '/js/get_version.js',
 ];
 
 // 监听安装事件

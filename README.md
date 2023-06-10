@@ -8,18 +8,18 @@ A web Flutter project, for import different search engine
 ## support
 <details>
 <summary>dependencies</summary>
-1. [sembast](https://pub.dev/packages/sembast)
-2. [sembast_web](https://pub.dev/packages/sembast_web)
-3. [get_it](https://pub.dev/packages/get_it)
-4. [cached_network_image](https://pub.dev/packages/cached_network_image)
-5. [event_bus](https://pub.dev/packages/event_bus)
-6. [loading_animations](https://pub.dev/packages/loading_animations)
-7. [flutter_colorpicker](https://pub.dev/packages/flutter_colorpicker)
+1. [sembast](https://pub.dev/packages/sembast)<br>
+2. [sembast_web](https://pub.dev/packages/sembast_web)<br>
+3. [get_it](https://pub.dev/packages/get_it)<br>
+4. [cached_network_image](https://pub.dev/packages/cached_network_image)<br>
+5. [event_bus](https://pub.dev/packages/event_bus)<br>
+6. [loading_animations](https://pub.dev/packages/loading_animations)<br>
+7. [flutter_colorpicker](https://pub.dev/packages/flutter_colorpicker)<br>
+8. [http](https://pub.dev/packages/http)
 </details>
-<br>
 <details>
 <summary>dev_dependencies</summary>
-1. [crypto](https://pub.dev/packages/crypto)
+1. [crypto](https://pub.dev/packages/crypto)<br>
 </details>
 ### dev
 

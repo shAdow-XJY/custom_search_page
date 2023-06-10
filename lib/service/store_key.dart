@@ -19,4 +19,7 @@ class StoreKey {
   //  背景图片
   static String isCustomBackImg = 'is_custom_back_img';
   static String customBackImgEncode = 'custom_back_img_encode';
+
+  // 版本号哈希
+  static String versionHashString = 'version_hash_string';
 }
