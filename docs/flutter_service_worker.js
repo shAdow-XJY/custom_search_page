@@ -27,9 +27,13 @@ const RESOURCES = {"assets/AssetManifest.bin": "69db4868e7c12e03dbeb57ef36973594
 "icons/Icon-512.png": "051a13ea5e4f34ea7bb0274b74cbfc5f",
 "icons/Icon-maskable-192.png": "c19e0d2d4277def438c834395399eb8e",
 "icons/Icon-maskable-512.png": "051a13ea5e4f34ea7bb0274b74cbfc5f",
-"index.html": "61cecc15bd40d096d33151ac79d3adf9",
-"/": "61cecc15bd40d096d33151ac79d3adf9",
-"main.dart.js": "831bf907b1e94ff74fdd0d012fb81d0c",
+"index.html": "75b5920ad633ab62d39653a695ac5a0b",
+"/": "75b5920ad633ab62d39653a695ac5a0b",
+"js/get_version.js": "5cc3884dc60992aee579b15b00196cfb",
+"js/service_worker.js": "3299f20696ae3b5b138c9099055ede7d",
+"js/service_worker_clear.js": "c23b7bf3d71027b9ecc3f77c1d06b212",
+"js/service_worker_register.js": "2c4ddf5a10ce773b1e4c81f18330215e",
+"main.dart.js": "8d10c64fbac5e63da9758361f9fe5714",
 "manifest.json": "1a148d5d956669bc5ef1f087d47d0f5b",
 "version.json": "682558fe7654e2cc42b71705528d89e7"};
 // The application shell files that are downloaded before a service worker can

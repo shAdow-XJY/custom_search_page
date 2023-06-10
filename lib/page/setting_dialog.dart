@@ -1,6 +1,5 @@
-
 import 'dart:html';
-
+import 'dart:js' as js;
 import 'package:custom_search_page/component/search_set.dart';
 import 'package:custom_search_page/component/style_set.dart';
 import 'package:flutter/material.dart';
@@ -26,9 +25,6 @@ class SettingDialog extends StatelessWidget {
           child: ScrollConfiguration(
             behavior: ScrollConfiguration.of(context).copyWith(
               scrollbars: false,
-              // dragDevices: {
-              //   PointerDeviceKind.touch,
-              // },
             ),
             child: SingleChildScrollView(
               child: SingleChildScrollView(
@@ -74,6 +70,40 @@ class SettingDialog extends StatelessWidget {
                         ),
                         child: const Text(
                           '恢复初始化',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w800,
+                          ),
+                        ),
+                      ),
+                    ),
+                    Align(
+                      child: TextButton(
+                        onPressed: () async {
+                          // js.context.callMethod('clearServiceWorkerCache');
+                        },
+                        style: ButtonStyle(
+                          side: MaterialStateProperty.resolveWith<BorderSide>((Set<MaterialState> states) {
+                            if (states.contains(MaterialState.hovered) || states.contains(MaterialState.pressed)) {
+                              return const BorderSide(color: Colors.white);
+                            }
+                            return const BorderSide(color: Colors.black);
+                          }),
+                          padding: MaterialStateProperty.all(const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0)),
+                          overlayColor: MaterialStateProperty.resolveWith<Color>((Set<MaterialState> states) {
+                            if (states.contains(MaterialState.hovered) || states.contains(MaterialState.pressed)) {
+                              return Colors.black;
+                            }
+                            return Colors.white;
+                          }),
+                          foregroundColor: MaterialStateProperty.resolveWith<Color>((Set<MaterialState> states) {
+                            if (states.contains(MaterialState.hovered) || states.contains(MaterialState.pressed)) {
+                              return Colors.white;
+                            }
+                            return Colors.black;
+                          }),
+                        ),
+                        child: const Text(
+                          '检查更新',
                           style: TextStyle(
                             fontWeight: FontWeight.w800,
                           ),
