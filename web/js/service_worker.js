@@ -10,6 +10,7 @@ const cacheItems = [
   '/manifest.json',
   '/main.dart.js',
   '/icons/Icon-192.png',
+  '/assets/AssetManifest.json',
   '/assets/FontManifest.json',
   '/assets/fonts/MaterialIcons-Regular.otf',
   '/assets/packages/cupertino_icons/assets/CupertinoIcons.ttf',

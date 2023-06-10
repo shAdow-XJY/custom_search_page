@@ -21,7 +21,6 @@ A web Flutter project, for import different search engine
 <summary>dev_dependencies</summary>
 1. [crypto](https://pub.dev/packages/crypto)<br>
 </details>
-### dev
 
 ## Getting Started
 solve flutter web font download event causes bad website speed, change use html render.
